@@ -1,9 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
-import { MdDarkMode, MdLightMode, MdVolumeOff, MdVolumeUp } from 'react-icons/md';
+import { useContext } from 'react';
+import { MdOutlineDarkMode, MdOutlineLightMode, MdVolumeOff, MdVolumeUp } from 'react-icons/md';
+import { AppContext, IAppContext } from '../../App';
 import BlackLogo from '../../assets/images/black-logo.svg?react';
 import WhiteLogo from '../../assets/images/white-logo.svg?react';
-import FridayVibesSound from '../../assets/sounds/friday_vibes.mp3';
-import { ColorSchemeContext, IColorSchemeContext } from '../../App';
 
 // ---------------------------------------------------------------------------------------------------- //
 // ---------------------------------------------- APP BAR --------------------------------------------- //
@@ -11,29 +10,26 @@ import { ColorSchemeContext, IColorSchemeContext } from '../../App';
 
 export default function AppBar() {
 
-    const { colorScheme, setColorScheme } = useContext(ColorSchemeContext) as IColorSchemeContext;
-    const [muted, setMuted] = useState(localStorage.getItem('muted') === 'true');
+    const { colorScheme, musicMuted, setContext } = useContext(AppContext) as IAppContext;
 
     const onChangeColorScheme = () => {
         const nextColorScheme = (colorScheme === 'light') ? 'dark' : 'light';
         document.body.classList.forEach(value => document.body.classList.remove(value));
         document.body.classList.add(nextColorScheme);
         localStorage.setItem('colorScheme', nextColorScheme);
-        setColorScheme(nextColorScheme);
+        setContext(prevContext => ({ ...prevContext, colorScheme: nextColorScheme }));
     }
 
     const onChangeMuted = () => {
-        localStorage.setItem('muted', muted ? 'false' : 'true');
-        setMuted(value => !value);
+        localStorage.setItem('musicMuted', musicMuted ? 'false' : 'true');
+        setContext(prevContext => ({ ...prevContext, musicMuted: !prevContext.musicMuted }));
     }
 
-    useEffect(() => {
-        const audio = document.querySelector('audio') as HTMLAudioElement;
-        audio.play();
-    }, []);
-
     return (
-        <header role="banner" className="header-banner">
+        <header
+            role="banner"
+            className="header-banner"
+        >
             <div className="flex items-center justify-between gap-8 max-w-screen-xl p-4 m-auto">
                 {colorScheme === 'dark' ? (
                     <WhiteLogo className="w-8 h-8 rounded" />
@@ -56,19 +52,14 @@ export default function AppBar() {
                         onClick={onChangeColorScheme}
                         className="text-xl text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
                     >
-                        {colorScheme === 'dark' ? <MdLightMode /> : <MdDarkMode />}
+                        {colorScheme === 'dark' ? <MdOutlineLightMode /> : <MdOutlineDarkMode />}
                     </button>
                     <button
                         onClick={onChangeMuted}
                         className="text-xl text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
                     >
-                        {muted ? <MdVolumeOff /> : <MdVolumeUp />}
+                        {musicMuted ? <MdVolumeOff /> : <MdVolumeUp />}
                     </button>
-                    <audio
-                        src={FridayVibesSound}
-                        muted={muted}
-                        loop
-                    />
                 </div>
             </div>
         </header>

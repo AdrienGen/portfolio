@@ -3,13 +3,15 @@ import AuroraBackground from './components/aurora-background';
 import Cursor from './components/cursor';
 import AppBar from './components/app-bar';
 import EvervaultBackground from './components/evervault-background';
+import FridayVibesMusic from './assets/sounds/friday_vibes.mp3';
 
-export interface IColorSchemeContext {
+export interface IAppContext {
     colorScheme: 'light' | 'dark';
-    setColorScheme: React.Dispatch<React.SetStateAction<'light' | 'dark'>>;
+    musicMuted: boolean;
+    setContext: React.Dispatch<React.SetStateAction<{ colorScheme: 'light' | 'dark'; musicMuted: boolean; }>>;
 }
 
-export const ColorSchemeContext = createContext<IColorSchemeContext | null>(null);
+export const AppContext = createContext<IAppContext | null>(null);
 
 // ---------------------------------------------------------------------------------------------------- //
 // ------------------------------------------------ APP ----------------------------------------------- //
@@ -17,24 +19,42 @@ export const ColorSchemeContext = createContext<IColorSchemeContext | null>(null
 
 export default function App() {
 
-    const [colorScheme, setColorScheme] = useState<'light' | 'dark'>(getInitialSchemeColor());
+    const [context, setContext] = useState<{ colorScheme: 'light' | 'dark'; musicMuted: boolean; }>({
+        colorScheme: getInitialSchemeColor(),
+        musicMuted: getInitialMusicMuted(),
+    });
 
     useEffect(() => {
-        document.body.classList.add(colorScheme);
+        document.body.classList.add(context.colorScheme);
         // eslint-disable-next-line
     }, []);
 
-
     return (
-        <ColorSchemeContext.Provider value={{ colorScheme, setColorScheme }}>
+        <AppContext.Provider
+            value={{
+                musicMuted: context.musicMuted,
+                colorScheme: context.colorScheme,
+                setContext,
+            }}
+        >
             <EvervaultBackground />
             <AuroraBackground showRadialGradient>
                 <Cursor />
                 <AppBar />
             </AuroraBackground>
-        </ColorSchemeContext.Provider>
+            <audio
+                id="background-music"
+                src={FridayVibesMusic}
+                muted={context.musicMuted}
+                loop
+            />
+        </AppContext.Provider>
     )
 }
+
+// ---------------------------------------------------------------------------------------------------- //
+// ---------------------------------------- INITIAL SCHEME COLOR -------------------------------------- //
+// ---------------------------------------------------------------------------------------------------- //
 
 function getInitialSchemeColor() {
     
@@ -47,4 +67,15 @@ function getInitialSchemeColor() {
         return 'dark';
     }
     return 'light';
+}
+
+// ---------------------------------------------------------------------------------------------------- //
+// ----------------------------------------- INITIAL MUSIC MUTED -------------------------------------- //
+// ---------------------------------------------------------------------------------------------------- //
+
+function getInitialMusicMuted() {
+
+    const storageMusicMuted = localStorage.getItem('musicMuted');
+
+    return storageMusicMuted === 'true';
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useMotionTemplate, motion, useMotionValue } from 'framer-motion';
-import { ColorSchemeContext, IColorSchemeContext } from '../../App';
+import { AppContext, IAppContext } from '../../App';
 import WhiteLogo from '../../assets/images/white-logo-without-bg.svg?react';
 import BlackLogo from '../../assets/images/black-logo-without-bg.svg?react';
 
@@ -10,7 +10,7 @@ import BlackLogo from '../../assets/images/black-logo-without-bg.svg?react';
 
 export default function EvervaultBackground() {
 
-    const { colorScheme } = useContext(ColorSchemeContext) as IColorSchemeContext;
+    const { colorScheme } = useContext(AppContext) as IAppContext;
 
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -30,6 +30,10 @@ export default function EvervaultBackground() {
     }
 
     function onClick() {
+
+        const audio = document.getElementById('background-music') as HTMLAudioElement;
+        audio.play();
+
         const aside = document.getElementById('opening-aside') as HTMLDivElement;
         aside.classList.remove('opacity-100');
         aside.classList.add('opacity-0', 'pointer-events-none');
