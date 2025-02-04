@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MdOutlineDarkMode, MdOutlineLightMode, MdVolumeOff, MdVolumeUp } from 'react-icons/md';
 import { AppContext, IAppContext } from '../../App';
 import BlackLogo from '../../assets/images/black-logo.svg?react';
@@ -11,6 +12,7 @@ import WhiteLogo from '../../assets/images/white-logo.svg?react';
 export default function AppBar() {
 
     const { colorScheme, musicMuted, setContext } = useContext(AppContext) as IAppContext;
+    const { t } = useTranslation();
 
     const onChangeColorScheme = () => {
         const nextColorScheme = (colorScheme === 'light') ? 'dark' : 'light';
@@ -41,10 +43,13 @@ export default function AppBar() {
                 </div>
                 <div className="flex gap-8">
                     <button className="font-medium text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100">
-                        Projets
+                        {t('certificates')}
                     </button>
                     <button className="font-medium text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100">
-                        Contact
+                        {t('skills')}
+                    </button>
+                    <button className="font-medium text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100">
+                        {t('contact')}
                     </button>
                 </div>
                 <div className="flex gap-4">
